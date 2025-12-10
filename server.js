@@ -20,9 +20,17 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Security requirements
-app.use(helmet.frameguard({ action: 'SAMEORIGIN' }));
-app.use(helmet.dnsPrefetchControl({ allow: false }));
-app.use(helmet.referrerPolicy({ policy: 'same-origin' }));
+app.use(helmet({
+    frameguard: {
+        action: 'sameorigin'
+    },
+    dnsPrefetchControl: {
+        allow: false
+    },
+    referrerPolicy: {
+        policy: 'same-origin'
+    }
+}));
 
 //Sample front-end
 app.route('/b/:board/')
