@@ -53,7 +53,7 @@ module.exports = function (app) {
                     title: test.title,
                     context: test.context,
                     state: test.state,
-                    // assertions: test.assertions
+                    assertions: test.assertions
                 });
             });
 
