@@ -12,25 +12,20 @@ const runner = require('./test-runner');
 
 const app = express();
 
+// Security requirements
+app.use(function (req, res, next) {
+    res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+    res.setHeader('X-DNS-Prefetch-Control', 'off');
+    res.setHeader('Referrer-Policy', 'same-origin');
+    next();
+});
+
 app.use('/public', express.static(process.cwd() + '/public'));
 
 app.use(cors({ origin: '*' })); //For FCC testing purposes only
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
-// Security requirements
-app.use(helmet({
-    frameguard: {
-        action: 'sameorigin'
-    },
-    dnsPrefetchControl: {
-        allow: false
-    },
-    referrerPolicy: {
-        policy: 'same-origin'
-    }
-}));
 
 //Sample front-end
 app.route('/b/:board/')

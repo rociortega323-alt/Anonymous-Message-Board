@@ -88,11 +88,13 @@ module.exports = function (app) {
                 const thread = await Thread.findById(thread_id);
                 if (!thread) return res.send('Thread not found');
 
+                const now = new Date();
                 const newReply = {
                     text,
-                    delete_password
+                    delete_password,
+                    created_on: now,
+                    reported: false
                 };
-
                 thread.replies.push(newReply);
                 thread.bumped_on = new Date();
                 await thread.save();
