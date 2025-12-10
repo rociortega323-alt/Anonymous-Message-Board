@@ -16,7 +16,8 @@ function objParser(str) {
 }
 
 module.exports = function (body) {
-    var body = body.replace(/\/\/\s*[\S\s]*/, ''); // Remove comments
+    var body = body.replace(/\/\/.*$/gm, ''); // Remove single-line comments
+    body = body.replace(/\/\*[\s\S]*?\*\//g, ''); // Remove multi-line comments
     var assertions = [];
     var regex = /assert\.\w+/g; // Match any assert.method
     var match = body.match(regex);
