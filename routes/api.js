@@ -95,24 +95,11 @@ module.exports = function (app) {
                     created_on: now,
                     reported: false
                 };
-                thread.replies.push(newReply);
-                thread.bumped_on = new Date();
-                await thread.save();
 
-                // Return full thread object logic? Or separate reply? 
-                // Docs: "save an object... in the thread's 'replies' array"
-                // Return: The prompt doesn't strictly say what to return for POST reply, usually it redirects or returns the thread.
-                // User story 5 says "Recommend res.redirect". But if it's an API test, JSON might be expected?
-                // Let's return the updated thread or redirect based on existing boilerplate behavior? 
-                // Actually, for the API tests, usually JSON is returned.
-                // But the front end redirects.
-                // Let's check if it's from frontend (referrer?) or just return JSON handling.
-                // Standard boilerplate often redirects.
-                // PROMPT says: "Recomend res.redirect to thread page /b/{board}/{thread_id}"
-                // But for testing scripts, redirection might be annoying if not handled.
-                // The tests usually check the DB. 
-                // Let's just return the thread with the new reply for now to be safe API-wise, or redirect.
-                // Actually, looking at the sample project, it redirects.
+                thread.replies.push(newReply);
+                thread.bumped_on = now;
+
+                await thread.save();
 
                 res.json(thread);
             } catch (err) {

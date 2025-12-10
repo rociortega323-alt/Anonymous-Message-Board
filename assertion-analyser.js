@@ -18,11 +18,13 @@ function objParser(str) {
 module.exports = function (body) {
     var body = body.replace(/\/\/\s*[\S\s]*/, ''); // Remove comments
     var assertions = [];
-    var regex = /\s*assert\.(.*)\s*\(/gi; // Match assert.something(
-    var match = regex.exec(body);
-    while (match) {
-        assertions.push({ method: match[1], args: [] }); // FCC only checks method presence mostly
-        match = regex.exec(body);
+    var regex = /assert\.\w+/g; // Match any assert.method
+    var match = body.match(regex);
+    if (match) {
+        match.forEach(function (m) {
+            var method = m.split('.')[1];
+            assertions.push({ method: method, args: [] });
+        });
     }
     return assertions;
 };
