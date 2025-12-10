@@ -17,7 +17,9 @@ var Mocha = require('mocha');
 var fs = require('fs');
 var path = require('path');
 
-var mocha = new Mocha();
+var mocha = new Mocha({
+    ui: 'tdd'
+});
 var testDir = './tests'
 
 
