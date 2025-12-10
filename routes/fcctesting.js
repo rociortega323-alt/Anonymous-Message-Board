@@ -32,14 +32,60 @@ module.exports = function (app) {
             });
         });
 
-    // app.use(function(req, res, next) {
-    //   res.status(404)
-    //     .type('text')
-    //     .send('Not Found');
-    // });
+    app.route('/_api/controllers/convertHandler.js')
+        .get(function (req, res, next) {
+            console.log('requested');
+            fs.readFile(__dirname + '/../controllers/convertHandler.js', function (err, data) {
+                if (err) return next(err);
+                res.type('txt').send(data.toString());
+            });
+        });
 
-    // No need for this, already in server.js? The boilerplate usually has this logic.
-    // Actually boilerplate puts specific route logic here or in separate file.
-    // For now, I'll stick to minimum needed for the test runner to pick up server files if needed.
-    // But standard boilerplate has this file.
+    var error;
+    app.get('/_api/get-tests', cors(), function (req, res, next) {
+        console.log(req.query);
+        if (process.env.NODE_ENV === 'test') {
+            var json = [];
+            if (!runner.report) return res.json([]);
+
+            runner.report.forEach(function (test) {
+                json.push({
+                    title: test.title,
+                    context: test.context,
+                    state: test.state,
+                    // assertions: test.assertions
+                });
+            });
+
+            res.json(json);
+        }
+    });
+
+    app.get('/_api/app-info', function (req, res) {
+        var hs = Object.keys(res.getHeaders())
+            .filter(h => !h.match(/^access-control-\w+/));
+        var hObj = {};
+        hs.forEach(h => { hObj[h] = res.getHeader(h) });
+        delete res._headers['strict-transport-security'];
+        res.json({ headers: hObj });
+    });
+
 };
+
+function testFilter(tests, type, n) {
+    var out;
+    switch (type) {
+        case 'unit':
+            out = tests.filter(t => t.context.match('Unit Tests'));
+            break;
+        case 'functional':
+            out = tests.filter(t => t.context.match('Functional Tests'));
+            break;
+        default:
+            out = tests;
+    }
+    if (n !== undefined) {
+        return out[n] || out;
+    }
+    return out;
+}

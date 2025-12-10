@@ -14,9 +14,11 @@ const app = express();
 
 // Security requirements
 app.use(function (req, res, next) {
-    res.setHeader('X-Frame-Options', 'SAMEORIGIN');
-    res.setHeader('X-DNS-Prefetch-Control', 'off');
-    res.setHeader('Referrer-Policy', 'same-origin');
+    res.set({
+        'X-Frame-Options': 'SAMEORIGIN',
+        'X-DNS-Prefetch-Control': 'off',
+        'Referrer-Policy': 'same-origin'
+    });
     next();
 });
 
